@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite Tree Placement and the upstream SOLWEIG-GPU paper."
+title: "Tree Placement: Urban microclimate simulation and tree-placement workflows"
+type: software
+authors:
+  - family-names: Silwal
+    given-names: Sashank
+  - family-names: Saher
+    given-names: Rubab
+  - family-names: Aliaga
+    given-names: Daniel G.
+version: 1.0.0
+date-released: 2026-08-25
+license: GPL-3.0-or-later
+repository-code: "https://github.com/sashanksilwal/Tree-Placement"
+references:
+  - type: article
+    title: "SOLWEIG-GPU: GPU-Accelerated Thermal Comfort Modeling Framework for Urban Digital Twins"
+    authors:
+      - family-names: Kamath
+        given-names: Harsh G.
+      - family-names: Sudharsan
+        given-names: Naveen
+      - family-names: Singh
+        given-names: Manmeet
+      - family-names: Wallenberg
+        given-names: Nils
+      - family-names: Lindberg
+        given-names: Fredrik
+      - family-names: Niyogi
+        given-names: Dev
+    doi: 10.21105/joss.09535
+    year: 2026

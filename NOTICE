@@ -1,0 +1,15 @@
+Tree Placement 1.0.0
+
+Copyright 2025-2026 Sashank Silwal.
+
+UTherm contains and modifies code from SOLWEIG-GPU, copyright 2022-2025
+Harsh Kamath and Naveen Sudharsan. SOLWEIG-GPU is derived from the SOLWEIG
+model distributed with UMEP. The upstream project is available at:
+
+https://github.com/nvnsudharsan/SOLWEIG-GPU
+
+The principal UTherm additions are the surface, roof and canopy energy-balance
+modules, spatial air-temperature methods, study orchestration, geospatial
+preprocessing, and the Adaptive and Hotspot tree-placement workflows.
+
+This distribution is licensed under GPL-3.0-or-later. See LICENSE.

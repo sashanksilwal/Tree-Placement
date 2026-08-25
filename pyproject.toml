@@ -1,0 +1,107 @@
+[project]
+name = "urbx-utherm"
+version = "1.0.0"
+description = "Tree Placement urban microclimate simulation and study-analysis workflows"
+readme = "README.md"
+requires-python = ">=3.10,<3.12"
+license = { text = "GPL-3.0-or-later" }
+keywords = [
+    "urban-microclimate",
+    "urban-thermal-comfort",
+    "mean-radiant-temperature",
+    "utci",
+    "energy-balance",
+    "surface-temperature",
+    "wind-field",
+    "gpu",
+    "pytorch",
+]
+authors = [
+    { name = "Sashank Silwal" },
+    { name = "Rubab Saher" },
+    { name = "Daniel G. Aliaga" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "numpy>=1.24,<2.0",
+    "torch>=2.0",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+    "netCDF4>=1.6",
+    "xarray>=2023.1",
+    "pytz>=2023.3",
+    "timezonefinder>=6.0",
+    "tqdm>=4.65",
+    "shapely>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sashanksilwal/Tree-Placement"
+Repository = "https://github.com/sashanksilwal/Tree-Placement.git"
+Issues = "https://github.com/sashanksilwal/Tree-Placement/issues"
+
+[project.scripts]
+utherm = "utherm.cli:main"
+utherm-place = "study_code.tree_placement:main"
+utherm-study = "study_code.run_study:main"
+utherm-analyze = "study_code.statistical_analysis:main"
+utherm-preflight = "study_code.preflight:main"
+utherm-geometry = "study_code.geospatial_preprocessing.generate_coupled_geometry:main"
+tree-placement-osm = "study_code.geospatial_preprocessing.osm_eligibility:main"
+
+[project.optional-dependencies]
+geo = [
+    "gdal>=3.0",
+    "rasterio>=1.3",
+]
+preprocessing = [
+    "geopandas>=0.14",
+    "pdal>=3.0",
+    "pyproj>=3.6",
+    "pystac-client>=0.7",
+    "planetary-computer>=1.0",
+    "requests>=2.31",
+    "scikit-learn>=1.3",
+    "cdsapi>=0.7",
+]
+gui = ["PyQt5>=5.15"]
+dev = [
+    "build>=1.2",
+    "pytest>=8.0",
+    "ruff>=0.9",
+    "twine>=6.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["utherm*", "study_code*"]
+
+[tool.setuptools.package-data]
+utherm = ["*.txt"]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+fixable = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+console_output_style = "count"
+log_cli = true
+log_cli_level = "INFO"
+testpaths = ["tests"]
+addopts = "-s"

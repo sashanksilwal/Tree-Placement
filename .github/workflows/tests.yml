@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Public-repository preflight
+        run: python -B -m study_code.preflight .
+      - uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+          condarc: |
+            channel_priority: flexible
+      - name: Install UTherm
+        shell: micromamba-shell {0}
+        run: python -m pip install --no-deps .
+      - name: Unit tests
+        shell: micromamba-shell {0}
+        run: pytest -q
+      - name: Placement smoke test
+        shell: micromamba-shell {0}
+        run: python examples/placement_smoke_test.py
+
+  # pyproject declares requires-python ">=3.10,<3.12" but environment.yml pins
+  # python=3.11 with py311-specific builds, so the 3.10 half of that range was
+  # never exercised. That is how a 3.11-only `datetime.UTC` import shipped. This
+  # job runs the dependency-light suite on the declared floor; it deliberately
+  # avoids the conda geo stack rather than duplicating it.
+  minimum-python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install core dependencies
+        # torch is a declared runtime dependency and tests/conftest.py imports it
+        # transitively via utherm.energy_balance, so the suite cannot collect
+        # without it. The CPU wheel keeps this job far lighter than the conda
+        # geo stack, which is the point of running it separately.
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+          python -m pip install "numpy>=1.24,<2.0" "scipy>=1.10" pytest
+      - name: Import modules that do not need the geo stack
+        run: |
+          python -c "import study_code.experiment_contract"
+          python -c "import study_code.tree_placement"
+          python -c "import study_code.geospatial_preprocessing.osm_eligibility"
+      - name: Dependency-light tests
+        run: pytest tests/test_tree_placement.py tests/test_experiment_contract.py -q
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build and inspect distributions
+        run: |
+          python -m pip install build twine
+          python -m build
+          python -m twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/
